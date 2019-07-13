@@ -4,6 +4,7 @@ exports.run = async (msg, args) => {
     const defaultStats = {
         currentHP: 20,
         maxHP: 20,
+        attacks: 1,
         damage: '1d4'
     };
 

@@ -14,6 +14,8 @@ exports.run = async (msg, args) => {
     if (!player) return send(msg.channel, '404 Player not found.');
 
     const stats = await this.mod.getPlayerStats(msg.guild, player.id);
+    if (!stats) return send(msg.channel, `${player.displayName} is not a player.`);
+
     const playerHP = () => `**${stats.currentHP}/${stats.maxHP}**`;
 
     let output = '';
@@ -25,21 +27,25 @@ exports.run = async (msg, args) => {
         if (stats.currentHP <= 0) break;
 
         // Player Attacks!
-        let outcome = roll.roll(stats.damage);
-        shamblerHP -= outcome.result;
+        for (let i = 0; i < stats.attacks; i++) {
+            let outcome = roll.roll(stats.damage);
+            shamblerHP -= outcome.result;
 
-        let rollResultsText;
-        if (Array.isArray(outcome.rolled[0])) {
-            // is array of arrays (multiple dice)
-            const multiRollArray = outcome.rolled.map(thisRoll => `\`${thisRoll.join(', ')}\``);
-            rollResultsText = multiRollArray.join('  /  ');
+            let rollResultsText;
+            if (Array.isArray(outcome.rolled[0])) {
+                // is array of arrays (multiple dice)
+                const multiRollArray = outcome.rolled.map(thisRoll => `\`${thisRoll.join(', ')}\``);
+                rollResultsText = multiRollArray.join('  /  ');
 
-        } else {
-            // is array of not arrays (one die)
-            rollResultsText = `\`${outcome.rolled.join(', ')}\``;
+            } else {
+                // is array of not arrays (one die)
+                rollResultsText = `\`${outcome.rolled.join(', ')}\``;
+            }
+
+            output += `${player.displayName} does ${rollResultsText} = **${outcome.result}** damage to the Shambler, leaving it with **${shamblerHP}** HP.\n`;
         }
+        output += '\n';
 
-        output += `${player.displayName} does ${rollResultsText} = **${outcome.result}** damage to the Shambler, leaving it with **${shamblerHP}** HP. \n\n`;
     }
 
     if (shamblerHP <= 0)
