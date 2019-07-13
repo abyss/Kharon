@@ -1,6 +1,6 @@
 {
-  "name": "voidbot",
-  "version": "0.2.9",
+  "name": "kharon",
+  "version": "1.0.0",
   "main": "src/index.js",
   "author": "abyss@voidinput.com",
   "license": "MIT",
