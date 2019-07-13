@@ -17,7 +17,7 @@ bot.on('ready', () => {
     bot.handlers.commands.init();
     bot.handlers.mods.init();
 
-    bot.user.setPresence({ game: { name: 'voidBot | use %help' }, status: 'online' });
+    bot.user.setPresence({ game: { name: 'Zombie Apocalypse!.... or something' }, status: 'online' });
     bot.log('Bot loaded!');
 
     bot.generateInvite(bot.config.permissions).then((invite_link) => {
