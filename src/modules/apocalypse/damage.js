@@ -7,7 +7,9 @@ exports.run = async (msg, args) => {
 
     const player = findUser(msg.guild, args[0]);
     if (!player) return send(msg.channel, '404 Player not found.');
+
     const stats = await this.mod.getPlayerStats(msg.guild, player.id);
+    if (!stats) return send(msg.channel, `${player.displayName} is not a player.`);
 
     if (args.length === 1) {
         await send(msg.channel, `${player.displayName}'s damage is ${stats.damage}.`);
