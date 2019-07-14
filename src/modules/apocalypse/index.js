@@ -28,7 +28,12 @@ module.exports = class ApocalypseModule extends Module {
     }
 
     async getBase(guild) {
-        return await this.bot.db.get(guild, 'base');
+        let base = await this.bot.db.get(guild, 'base');
+        if (!base) base = {
+            currentHP: 150,
+            maxHP: 150
+        };
+        return base;
     }
 
     async getBaseHP(guild) {
@@ -45,6 +50,10 @@ module.exports = class ApocalypseModule extends Module {
 
     async setBaseMaxHP(guild, baseMaxHP) {
         await this.bot.db.set(guild, 'base.maxHP', baseMaxHP);
+    }
+
+    async getPlayers(guild) {
+        return await this.bot.db.get(guild, 'players');
     }
 
     async getPlayerStats(guild, id) {

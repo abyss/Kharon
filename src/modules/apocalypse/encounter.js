@@ -4,7 +4,7 @@ const { stripIndents } = require('common-tags');
 const Roll = require('roll');
 const roll = new Roll();
 
-const shamblerDamage = '1d6+2';
+const shamblerDmgRoll = '1d6+2';
 const shamblerMaxHP = 7;
 
 exports.run = async (msg, args) => {
@@ -21,9 +21,16 @@ exports.run = async (msg, args) => {
     let output = '';
     while(stats.currentHP > 0 && shamblerHP > 0) {
         // Shambler Attacks!
-        let result = roll.roll(shamblerDamage).result;
+        let shamblerDamage = roll.roll(shamblerDmgRoll).result;
+        let armourReduction = 0;
+        if (stats.armour) armourReduction = roll.roll(stats.armour).result;
+
+        let result = Math.max(0, shamblerDamage-armourReduction);
+
         stats.currentHP -= result;
-        output += `The Shambler does **${result}** damage to ${player.displayName}, leaving them with ${playerHP()} HP.\n`;
+        if (armourReduction) output += `The Shambler does \`${shamblerDamage}-${armourReduction}\` = **${result}** damage to ${player.displayName}, leaving them with ${playerHP()} HP.\n`;
+        else output += `The Shambler does **${result}** damage to ${player.displayName}, leaving them with ${playerHP()} HP.\n`;
+
         if (stats.currentHP <= 0) break;
 
         // Player Attacks!
