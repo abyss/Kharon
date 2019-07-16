@@ -2,6 +2,7 @@ const Fuse = require('fuse.js');
 const logger = require('./logger');
 const { resolveColor } = require('discord.js/src/client/ClientDataResolver');
 const { FLAGS } = require('discord.js').Permissions;
+const Roll = require('roll');
 
 // TODO: alwaysId() - if not already an id, get object's id.
 
@@ -113,6 +114,18 @@ exports.findUser = function (guild, userText) {
     const fuse = new Fuse(Array.from(guild.members.values()), options);
     const results = fuse.search(userText);
     return results[0];
+};
+
+exports.roll = function (diceText) {
+    const roll = new Roll();
+    const result = roll.roll(diceText);
+
+    const dice = result.rolled;
+    const total = result.result;
+    const totalDice = dice.flat(1).reduce((a, c) => a + c);
+    const mod = result - totalDice;
+
+    return { dice, total, mod };
 };
 
 // Extend flags to include NOONE
