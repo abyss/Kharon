@@ -27,11 +27,12 @@ exports.run = async (msg, args) => {
         let output = '';
         while(stats.currentHP > 0 && shamblerHP > 0) {
             // Shambler Attacks!
-            let shamblerDamage = roll(shamblerDmgRoll).total;
+            let shamblerRoll = roll(shamblerDmgRoll);
+            let shamblerDamage = shamblerRoll.total;
             let armourReduction = 0;
             if (stats.armour) armourReduction = roll(stats.armour).total;
 
-            let result = Math.max(0, shamblerDamage-armourReduction);
+            let result = Math.max(0, shamblerDamage - armourReduction);
 
             stats.currentHP -= result;
             if (armourReduction) output += `The Shambler does \`${shamblerDamage}-${armourReduction}\` = **${result}** damage to ${player.displayName}, leaving them with ${playerHP()} HP.\n`;
@@ -48,11 +49,16 @@ exports.run = async (msg, args) => {
                 if (Array.isArray(outcome.dice[0])) {
                     // is array of arrays (multiple dice)
                     const multiRollArray = outcome.dice.map(thisRoll => `\`${thisRoll.join(', ')}\``);
-                    rollResultsText = multiRollArray.join('  /  ');
-
+                    if (outcome.mod)
+                        rollResultsText = multiRollArray.join('  /  ') + `  /  \`+ ${outcome.mod}\``;
+                    else
+                        rollResultsText = multiRollArray.join('  /  ');
                 } else {
                     // is array of not arrays (one die)
-                    rollResultsText = `\`${outcome.dice.join(', ')}\``;
+                    if (outcome.mod)
+                        rollResultsText = `\`${outcome.dice.join(', ')} + ${outcome.mod}\``;
+                    else
+                        rollResultsText = `\`${outcome.dice.join(', ')}\``;
                 }
 
                 output += `${player.displayName} does ${rollResultsText} = **${outcome.total}** damage to the Shambler, leaving it with **${shamblerHP}** HP.\n`;

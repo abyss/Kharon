@@ -123,7 +123,7 @@ exports.roll = function (diceText) {
     const dice = result.rolled;
     const total = result.result;
     const totalDice = dice.flat(1).reduce((a, c) => a + c);
-    const mod = result - totalDice;
+    const mod = total - totalDice;
 
     return { dice, total, mod };
 };
