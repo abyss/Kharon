@@ -29,9 +29,9 @@ exports.usage = new Map([
 ]);
 
 exports.config = {
-    name: 'Number of Attacks',
-    cmd: 'attacks',
-    alias: ['attack', 'numattacks'],
+    name: 'Multiple Attacks',
+    cmd: 'multiattack',
+    alias: ['multiattacks', 'multi', 'numattacks'],
     // Permissions use https://discord.js.org/#/docs/main/stable/class/Permissions?scrollTo=s-FLAGS
     // or NOONE - which rejects everyone.
     botPermissions: [], // Guild permissions needed by the bot to use this command.
