@@ -1,7 +1,4 @@
-const { send, findUser } = require('../../includes/helpers');
-
-const Roll = require('roll');
-const roll = new Roll();
+const { send, findUser, roll } = require('../../includes/helpers');
 
 exports.run = async (msg, args) => {
     const player = findUser(msg.guild, args[0]);
@@ -14,20 +11,20 @@ exports.run = async (msg, args) => {
 
     // Player Attacks!
     for (let i = 0; i < stats.attacks; i++) {
-        let outcome = roll.roll(stats.damage);
+        let outcome = roll(stats.damage);
 
         let rollResultsText;
-        if (Array.isArray(outcome.rolled[0])) {
+        if (Array.isArray(outcome.dice[0])) {
             // is array of arrays (multiple dice)
-            const multiRollArray = outcome.rolled.map(thisRoll => `\`${thisRoll.join(', ')}\``);
+            const multiRollArray = outcome.dice.map(thisRoll => `\`${thisRoll.join(', ')}\``);
             rollResultsText = multiRollArray.join('  /  ');
 
         } else {
             // is array of not arrays (one die)
-            rollResultsText = `\`${outcome.rolled.join(', ')}\``;
+            rollResultsText = `\`${outcome.dice.join(', ')}\``;
         }
 
-        output += `${player.displayName} deals ${rollResultsText} = **${outcome.result}** damage.\n`;
+        output += `${player.displayName} deals ${rollResultsText} = **${outcome.total}** damage.\n`;
     }
 
     await send(msg.channel, output);

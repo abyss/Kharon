@@ -1,6 +1,4 @@
-const { send, findUser } = require('../../includes/helpers');
-const Roll = require('roll');
-const roll = new Roll();
+const { send, findUser, validateRoll } = require('../../includes/helpers');
 
 exports.run = async (msg, args) => {
     if (args.length < 1) return false;
@@ -14,7 +12,7 @@ exports.run = async (msg, args) => {
     if (args.length === 1) {
         await send(msg.channel, `${player.displayName}'s damage is ${stats.damage}.`);
     } else {
-        if (!roll.validate(args[1])) return send(msg.channel, 'Invalid damage roll.');
+        if (!validateRoll(args[1])) return send(msg.channel, 'Invalid damage roll.');
 
         stats.damage = args[1];
         await this.mod.setPlayerStats(msg.guild, player.id, stats);

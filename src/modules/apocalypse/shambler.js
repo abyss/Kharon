@@ -1,8 +1,5 @@
-const { send, findUser } = require('../../includes/helpers');
+const { send, findUser, roll } = require('../../includes/helpers');
 const { stripIndents } = require('common-tags');
-
-const Roll = require('roll');
-const roll = new Roll();
 
 const shamblerDmgRoll = '1d6+2';
 const shamblerMaxHP = 7;
@@ -13,7 +10,7 @@ exports.run = async (msg, args) => {
 
     if (args.length === 0){
 
-        const result = roll.roll(shamblerDmgRoll).result;
+        const result = roll(shamblerDmgRoll).total;
         send(msg.channel, `The Shambler rolls ${shamblerDmgRoll} and attacks for: **${result}** damage.`);
 
     } else if (args[0] === 'hp') {
@@ -30,9 +27,9 @@ exports.run = async (msg, args) => {
         let output = '';
         while(stats.currentHP > 0 && shamblerHP > 0) {
             // Shambler Attacks!
-            let shamblerDamage = roll.roll(shamblerDmgRoll).result;
+            let shamblerDamage = roll(shamblerDmgRoll).total;
             let armourReduction = 0;
-            if (stats.armour) armourReduction = roll.roll(stats.armour).result;
+            if (stats.armour) armourReduction = roll(stats.armour).total;
 
             let result = Math.max(0, shamblerDamage-armourReduction);
 
@@ -44,21 +41,21 @@ exports.run = async (msg, args) => {
 
             // Player Attacks!
             for (let i = 0; i < stats.attacks; i++) {
-                let outcome = roll.roll(stats.damage);
-                shamblerHP -= outcome.result;
+                let outcome = roll(stats.damage);
+                shamblerHP -= outcome.total;
 
                 let rollResultsText;
-                if (Array.isArray(outcome.rolled[0])) {
+                if (Array.isArray(outcome.dice[0])) {
                     // is array of arrays (multiple dice)
-                    const multiRollArray = outcome.rolled.map(thisRoll => `\`${thisRoll.join(', ')}\``);
+                    const multiRollArray = outcome.dice.map(thisRoll => `\`${thisRoll.join(', ')}\``);
                     rollResultsText = multiRollArray.join('  /  ');
 
                 } else {
                     // is array of not arrays (one die)
-                    rollResultsText = `\`${outcome.rolled.join(', ')}\``;
+                    rollResultsText = `\`${outcome.dice.join(', ')}\``;
                 }
 
-                output += `${player.displayName} does ${rollResultsText} = **${outcome.result}** damage to the Shambler, leaving it with **${shamblerHP}** HP.\n`;
+                output += `${player.displayName} does ${rollResultsText} = **${outcome.total}** damage to the Shambler, leaving it with **${shamblerHP}** HP.\n`;
             }
             output += '\n';
 

@@ -1,17 +1,14 @@
-const { send } = require('../../includes/helpers');
+const { send, roll, validateRoll } = require('../../includes/helpers');
 const { stripIndents } = require('common-tags');
 
-const Roll = require('roll');
-const roll = new Roll();
-
 exports.run = async (msg, args) => {
-    if (!roll.validate(args[0])) {
+    if (!validateRoll(args[0])) {
         await send(msg.channel, `**${args[0]}** is not a valid input string for rolling.`);
         return;
     }
 
-    const outcome = roll.roll(args[0]);
-    const rolled = outcome.rolled;
+    const outcome = roll(args[0]);
+    const rolled = outcome.dice;
 
     const rollText = function (displayName, rolled, results, total) {
         return stripIndents`
@@ -26,11 +23,11 @@ exports.run = async (msg, args) => {
         const multiRollArray = rolled.map(thisRoll => `\`${thisRoll.join(', ')}\``);
         const multiRoll = multiRollArray.join('  /  ');
 
-        await send(msg.channel, rollText(msg.member.displayName, args[0], multiRoll, outcome.result));
+        await send(msg.channel, rollText(msg.member.displayName, args[0], multiRoll, outcome.total));
     } else {
         // is array of not arrays (one die)
         const singleRoll = `\`${rolled.join(', ')}\``;
-        await send(msg.channel, rollText(msg.member.displayName, args[0], singleRoll, outcome.result));
+        await send(msg.channel, rollText(msg.member.displayName, args[0], singleRoll, outcome.total));
     }
 };
 

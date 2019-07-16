@@ -128,5 +128,10 @@ exports.roll = function (diceText) {
     return { dice, total, mod };
 };
 
+exports.validateRoll = function (diceText) {
+    const roll = new Roll();
+    return roll.validate(diceText);
+};
+
 // Extend flags to include NOONE
 exports.EXTENDED_FLAGS = { ...FLAGS, ...{ 'NOONE': '' } };
