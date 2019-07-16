@@ -46,6 +46,8 @@ exports.userColor = function (userId, guild) {
 exports.resolveColor = resolveColor;
 
 exports.findExactRole = function (guild, roleText) {
+    if (!roleText) return false;
+
     // Override "everyone" to "@everyone" for a match
     if (roleText === 'everyone') {
         roleText = '@everyone';
@@ -61,6 +63,8 @@ exports.findExactRole = function (guild, roleText) {
 };
 
 exports.findRole = function (guild, roleText) {
+    if (!roleText) return false;
+
     const options = {
         shouldSort: true,
         threshhold: 0.3, // between 0 (perfect) to 1 (complete mismatch)
@@ -85,6 +89,8 @@ exports.findRole = function (guild, roleText) {
 };
 
 exports.findUser = function (guild, userText) {
+    if (!userText) return false;
+
     const options = {
         shouldSort: true,
         threshhold: 0.3, // between 0 (perfect) to 1 (complete mismatch)
